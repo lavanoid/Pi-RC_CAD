@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """Interactive control for the remote radio control Raspberry Pi."""
-"""Script modified by Jack Davies AKA Lavanoid-VD to work with the PiFace CAD"""
+"""Script modified by Jack Davies (lavanoid) to work with the PiFace CAD"""
 
 # To use this script, you must install the PiFace CAD library using "sudo apt-get install python-pifacecad"
 import argparse
