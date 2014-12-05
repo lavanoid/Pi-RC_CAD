@@ -1,8 +1,10 @@
 #!/usr/bin/env python
-"""Interactive control for the remote radio control Raspberry Pi."""
-"""Script modified by Jack Davies (lavanoid) to work with the PiFace CAD"""
+"""Interactive control for the remote radio control Raspberry Pi.  Script
+modified by Jack Davies (lavanoid) to work with the PiFace CAD.
+"""
 
-# To use this script, you must install the PiFace CAD library using "sudo apt-get install python-pifacecad"
+# To use this script, you must install the PiFace CAD library using "sudo
+# apt-get install python-pifacecad"
 import argparse
 import json
 import time
@@ -13,6 +15,7 @@ from common import dead_frequency
 from common import server_up
 
 def load_configuration(configuration_file):
+    """Generates a dict of JSON command messages for each movement."""
     configuration = json.loads(configuration_file.read())
     dead = dead_frequency(configuration['frequency'])
     sync_command = {
@@ -55,48 +58,51 @@ def load_configuration(configuration_file):
     return direct_commands
 
 def interactive_control(host, port, configuration):
-	cad.lcd.backlight_off() # Save power. Useful for battery projects.
-	controlname = 'Pi-RC - 2: Quit'
-	cad.lcd.write(controlname + "\n0L,1LED,5A,  4:R")
-	cad.lcd.cursor_off()
-	globals()['sock'] = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-	globals()['host'] = host
-	globals()['port'] = port
-	globals()['configuration'] = configuration
-	command = 'idle'
-	currentcommand = command
-	operation = 'forward'
-	backlight = False
-	while True:
-		command = 'idle'
-		# Use the joystick key to change the acceleration direction.
-		if cad.switches[1].value == 1:
-			if backlight == False:
-				backlight = True
-				cad.lcd.backlight_on()
-				time.sleep(1)
-			else:
-				backlight = False
-				cad.lcd.backlight_off()
-				time.sleep(1)
-		if cad.switches[6].value == 1:
-			operation = 'reverse'
-		elif cad.switches[7].value == 1:
-			operation = 'forward'
-		if cad.switches[2].value == 1:
-			sock.sendto(configuration[command], (host, port))
-			exit()
-		elif cad.switches[5].value == 1:
-			command = operation
-		if command == 'forward' or command == 'reverse':
-			if cad.switches[0].value == 1:
-				command += '_left'
-			elif cad.switches[4].value == 1:
-				command += '_right'
-		if not command == currentcommand:
-			# Avoid causing pi_pcm from crashing.
-			currentcommand = command
-			sock.sendto(configuration[command], (host, port))
+    """Runs the interactive control."""
+    cad.lcd.backlight_off() # Save power. Useful for battery projects.
+    controlname = 'Pi-RC - 2: Quit'
+    cad.lcd.write(controlname + "\n0L,1LED,5A,  4:R")
+    cad.lcd.cursor_off()
+    globals()['sock'] = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    globals()['host'] = host
+    globals()['port'] = port
+    globals()['configuration'] = configuration
+    command = 'idle'
+    currentcommand = command
+    operation = 'forward'
+    backlight = False
+    while True:
+        command = 'idle'
+        # Use the joystick key to change the acceleration direction.
+        if cad.switches[1].value == 1:
+            if backlight == False:
+                backlight = True
+                cad.lcd.backlight_on()
+                time.sleep(1)
+            else:
+                backlight = False
+                cad.lcd.backlight_off()
+                time.sleep(1)
+        if cad.switches[6].value == 1:
+            operation = 'reverse'
+        elif cad.switches[7].value == 1:
+            operation = 'forward'
+        if cad.switches[2].value == 1:
+            sock.sendto(configuration[command], (host, port))
+            exit()
+        elif cad.switches[5].value == 1:
+            command = operation
+        if command == 'forward' or command == 'reverse':
+            if cad.switches[0].value == 1:
+                command += '_left'
+            elif cad.switches[4].value == 1:
+                command += '_right'
+        if not command == currentcommand:
+            # Avoid causing pi_pcm from crashing.
+            currentcommand = command
+            sock.sendto(configuration[command], (host, port))
+
+
 def make_parser():
     """Builds and returns an argument parser."""
     parser = argparse.ArgumentParser(
