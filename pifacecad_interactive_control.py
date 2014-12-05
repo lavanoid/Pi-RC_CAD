@@ -7,7 +7,6 @@ import argparse
 import json
 import time
 import pifacecad
-from pifacecad.tools.question import LCDQuestion
 cad = pifacecad.PiFaceCAD()
 import socket
 from common import dead_frequency
