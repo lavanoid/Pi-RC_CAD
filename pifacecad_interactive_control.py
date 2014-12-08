@@ -86,7 +86,7 @@ def interactive_control(host, port, configuration):
         if cad.switches[6].value == 1:
             operation = 'reverse'
         else:
-			if cad.switches[7].value == 1:
+		    if cad.switches[7].value == 1:
 				operation = 'forward'
 			elif cad.switches[3].value == 1:
 				operation = 'reverse'
